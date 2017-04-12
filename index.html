@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="jquery.min.js"></script>
+<script src="jquery-ui.js"></script>
+<script src="bodymovin.js"></script>
+<script src="tween-max.min.js"></script>
+<script src="master.js"></script>
+	<meta charset="UTF-8">
+	<title>player test</title>
+</head>
+<body>
+
+	<button id="pause">pause</button>
+
+	<div id='content'>
+	</div>
+
+	<script>
+		    //timeline init
+	content = $("#content")
+
+    TweenLite.set(content, {visibility:"visible"})
+    //instantiate a TimelineMax    
+    var tl = new TimelineMax();
+    tl.set({}, {}, 4.5);
+
+   //create animation container and load the svg animation
+    function animLoad(wrapperId) { 
+        var animDIv = $('<div class="bodymovin" id=wrapper'+wrapperId+'></div>');
+
+        $('#content').append(animDIv);
+
+        bodymovin.loadAnimation({
+        container: document.getElementById('wrapper'+wrapperId),
+        renderer: 'svg',
+        loop: true,
+        path: 'anims/'+wrapperId+'.json'
+        });
+     }
+
+     var animations = [
+            {
+            delay: 0.5,
+			duration: 1,
+	        startLeft: 0,
+	        startTop: 0,
+	        dropLeft: 300,
+	        dropTop: 0,
+            selector: 'a'
+        },
+        {
+            delay: 1.5,
+			duration: 1,
+	        startLeft: 300,
+	        startTop: 0,
+	        dropLeft: 300,
+	        dropTop: 300,
+            selector: 'a'
+        },
+        {
+            delay: 2.5,
+			duration: 1,
+	        startLeft: 300,
+	        startTop: 300,
+	        dropLeft: 300,
+	        dropTop: 150,
+            selector: 'a'
+        },
+        {
+            delay: 3.5,
+			duration: 1,
+	        startLeft: 300,
+	        startTop: 150,
+	        dropLeft: 150,
+	        dropTop: 150,
+            selector: 'a'
+        }
+    ];
+
+    //add steps to animations array
+	(function () {	
+
+		// var step = {
+		// 	delay: recTime,
+		// 	duration: time - recTime,
+	    //     startLeft: positions.startLeft,
+	    //     startTop: positions.startTop,
+	    //     dropLeft: positions.dropLeft,
+	    //     dropTop: positions.dropTop,
+        //     selector: id
+		// }
+
+        for (var i = 0; i < animations.length; i++) {
+            
+            if (!$('#wrapper'+animations[i].selector).length) {
+                animLoad(animations[i].selector);   
+            }
+
+            tl.fromTo($('#wrapper'+animations[i].selector), animations[i].duration, {top: animations[i].startTop, left: animations[i].startLeft}, {top: animations[i].dropTop, left: animations[i].dropLeft},animations[i].delay);
+        }
+	})();
+
+	function pauseAnimationAt(time) {
+    	tl.seek(time); // timeline is a TimelineMax instance
+	}
+
+	function getTotalDurationInSeconds() {
+		return tl.totalDuration();
+	}
+
+	$('#pause').click(function(){
+		tl.seek(2);
+	});
+
+	</script>
+	
+</body>
+</html>
